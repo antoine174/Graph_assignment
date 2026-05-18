@@ -47,11 +47,55 @@ public class Graph implements IGraph {
 
     @Override
     public List<Edge> primMST() {
-        return List.of();
+        int source = 0;
+
+        int[] dist = new int[this.vertices];
+        int[] par = new int[this.vertices];
+        boolean[] inMST = new boolean[this.vertices];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        Arrays.fill(par, -1);
+        dist[source] = 0;
+        PriorityQueue<Pair> pq = new PriorityQueue<>();
+        pq.add(new Pair(0, source));
+        while (!pq.isEmpty()){
+            Pair current = pq.poll();
+            int disNode = current.first();
+            int topNode = current.second();
+            if(inMST[topNode]){
+                continue;
+            }
+            inMST[topNode]=true;
+
+            for (Edge edge : adjList.get(topNode)) {
+                int adjNode = edge.v();
+                int weight = edge.weight();
+
+                 if(!inMST[adjNode] &&  weight<dist[adjNode]){
+                     dist[adjNode]=weight;
+                     par[adjNode]=topNode;
+                     pq.add(new Pair(weight,adjNode));
+                 }
+            }
+
+
+        }
+        List<Edge> theEdges=new ArrayList<>();
+        for(int i=0;i<this.vertices;i++){
+            if(i!=source){
+                if(par[i]!=-1){
+                    theEdges.add(new Edge(par[i],i,dist[i]));
+                }
+            }
+
+        }
+
+
+        return theEdges;
     }
 
     @Override
     public List<Edge> kruskalMST() {
+
         return List.of();
     }
 
