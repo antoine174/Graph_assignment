@@ -1,0 +1,7 @@
+Graph Topology,Algorithm,Mean (ms),Median (ms),Standard Deviation (ms)
+"Sparse Graph (E ~ 5V)","Prim's Algorithm",9.02,3.85,6.72
+"Sparse Graph (E ~ 5V)","Kruskal's Algorithm",9.96,5.13,6.56
+"Dense Graph (E ~ 25%)","Prim's Algorithm",62.93,62.63,1.68
+"Dense Graph (E ~ 25%)","Kruskal's Algorithm",140.08,139.26,3.84
+"Complete Graph (E ~ 100%)","Prim's Algorithm",164.78,160.86,27.34
+"Complete Graph (E ~ 100%)","Kruskal's Algorithm",4056.78,390.01,7343.27

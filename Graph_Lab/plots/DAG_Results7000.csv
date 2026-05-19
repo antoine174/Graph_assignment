@@ -1,0 +1,4 @@
+Graph Topology,Algorithm,Mean (ms),Median (ms),Standard Deviation (ms),Speed-up Multiplier,Time Decrease (%)
+"DAG","Dijkstra",1.01,1.01,0.03,1.00x,0.00%
+"DAG","Linear (DFS)",6.91,2.23,8.26,0.15x,-581.71%
+"DAG","Linear (Kahn)",2.96,2.05,1.81,0.34x,-192.24%

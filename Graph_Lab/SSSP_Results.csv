@@ -1,0 +1,5 @@
+Graph Topology,Algorithm,Mean (ms),Median (ms),Standard Deviation (ms)
+"Sparse Graph (E ~ 5V)","Dijkstra's Algorithm",3.62,2.58,1.78
+"Dense Graph (E ~ 25%)","Dijkstra's Algorithm",41.85,43.01,4.44
+"Complete Graph (E ~ 100%)","Dijkstra's Algorithm",106.89,107.22,2.47
+"DAG (Directed Acyclic)","Dijkstra's Algorithm",0.85,0.72,0.26
