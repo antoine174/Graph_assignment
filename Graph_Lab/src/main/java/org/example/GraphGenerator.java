@@ -9,18 +9,18 @@ public class GraphGenerator {
     private static int getRandomWeight(Random random) {
         return random.nextInt(MAX_WEIGHT) + MIN_WEIGHT;
     }
-
+//hashing n7othm gnb b3d
     private static long encodeEdge(int u, int v) {
         int min = Math.min(u, v);
         int max = Math.max(u, v);
         return ((long) min << 32) | (max & 0xFFFFFFFFL);
     }
-
+//sparse
     public static Graph generateSparseGraph(int vertices, long seed) {
         Graph graph = new Graph(vertices);
         Random random = new Random(seed);
-        int targetEdges = 5 * vertices;
-        Set<Long> existingEdges = new HashSet<>();
+        int target = 5 * vertices;
+        Set<Long> exist = new HashSet<>();
         List<Integer> nodes = new ArrayList<>();
         for (int i = 0; i < vertices; i++) nodes.add(i);
         Collections.shuffle(nodes, random);
@@ -29,26 +29,26 @@ public class GraphGenerator {
             int u = nodes.get(i);
             int v = nodes.get(i + 1);
             graph.addEdge(u, v, getRandomWeight(random));
-            existingEdges.add(encodeEdge(u, v));
+            exist.add(encodeEdge(u, v));
         }
 
-        int edgesAdded = vertices - 1;
-        while (edgesAdded < targetEdges) {
+        int current = vertices - 1;
+        while (current < target) {
             int u = random.nextInt(vertices);
             int v = random.nextInt(vertices);
 
             if (u != v) {
                 long edgeId = encodeEdge(u, v);
-                if (!existingEdges.contains(edgeId)) {
+                if (!exist.contains(edgeId)) {
                     graph.addEdge(u, v, getRandomWeight(random));
-                    existingEdges.add(edgeId);
-                    edgesAdded++;
+                    exist.add(edgeId);
+                    current++;
                 }
             }
         }
         return graph;
     }
-
+  //dense
     public static Graph generateDenseGraph(int vertices, long seed) {
         Graph graph = new Graph(vertices);
         Random random = new Random(seed);
@@ -76,7 +76,7 @@ public class GraphGenerator {
         }
         return graph;
     }
-
+   //Complete
     public static Graph generateCompleteGraph(int vertices, long seed) {
         Graph graph = new Graph(vertices);
         Random random = new Random(seed);
@@ -88,11 +88,11 @@ public class GraphGenerator {
         }
         return graph;
     }
-
+    //DAG
     public static Graph generateDAG(int vertices, long seed) {
         Graph graph = new Graph(vertices);
         Random random = new Random(seed);
-        int targetEdges = 5 * vertices;
+        int target = 5 * vertices;
         Set<Long> existingEdges = new HashSet<>();
 
         for (int i = 0; i < vertices - 1; i++) {
@@ -100,8 +100,8 @@ public class GraphGenerator {
             existingEdges.add(encodeEdge(i, i + 1));
         }
 
-        int edgesAdded = vertices - 1;
-        while (edgesAdded < targetEdges) {
+        int current = vertices - 1;
+        while (current < target) {
             int u = random.nextInt(vertices - 1);
             int v = u + 1 + random.nextInt(vertices - u - 1);
 
@@ -109,7 +109,7 @@ public class GraphGenerator {
             if (!existingEdges.contains(edgeId)) {
                 graph.addDirectedEdge(u, v, getRandomWeight(random));
                 existingEdges.add(edgeId);
-                edgesAdded++;
+                current++;
             }
         }
         return graph;

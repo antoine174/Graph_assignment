@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.Locale;
 
 public class BenchmarkRunner {
-
-    private static final int VERTICES = 5000;
+//def fe vm options -Xmx4G -Xss8m
+    private static final int VERTICES = 5000;// moomkn t over flow
     private static final int RUNS = 5;
     private static final long SEED = 42L;
 
@@ -111,7 +111,6 @@ public class BenchmarkRunner {
         double kahnMultiplier = dStats[0] / kahnStats[0];
         double kahnPercentage = ((dStats[0] - kahnStats[0]) / dStats[0]) * 100;
 
-        // Write perfectly formatted CSV rows
         csv.append(String.format(Locale.US, "\"%s\",\"%s\",%.2f,%.2f,%.2f,1.00x,0.00%%\n",
                 "DAG", "Dijkstra", dStats[0], dStats[1], dStats[2]));
 
