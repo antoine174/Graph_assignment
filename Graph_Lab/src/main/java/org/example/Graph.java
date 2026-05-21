@@ -147,11 +147,8 @@ public class Graph implements IGraph {
     public int[] dagShortestPath(int source) {
         List<Integer> topoList = new ArrayList<>();
         int[] state = new int[this.vertices];
-        for (int i = 0; i < this.vertices; i++) {
-            if (state[i] == 0) {
-                DFS(i, state, topoList);
-            }
-        }
+        DFS(source, state, topoList);
+
         Collections.reverse(topoList);
         int[] dist = new int[this.vertices];
         Arrays.fill(dist, Integer.MAX_VALUE);

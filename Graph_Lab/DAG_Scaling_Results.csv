@@ -1,0 +1,13 @@
+Runs,Algorithm,Mean (ms),Median (ms),Standard Deviation (ms),Speed-up Multiplier,Time Decrease (%)
+5,"Dijkstra",1.75,2.06,0.54,1.00x,0.00%
+5,"Linear (DFS)",1.10,0.95,0.34,1.59x,37.18%
+5,"Linear (Kahn)",2.44,1.55,1.60,0.72x,-39.63%
+10,"Dijkstra",4.87,1.19,3.70,1.00x,0.00%
+10,"Linear (DFS)",2.73,0.78,2.26,1.78x,43.91%
+10,"Linear (Kahn)",2.24,0.68,1.90,2.18x,54.03%
+20,"Dijkstra",4.24,0.81,6.39,1.00x,0.00%
+20,"Linear (DFS)",4.06,0.63,6.15,1.04x,4.25%
+20,"Linear (Kahn)",5.83,0.84,8.95,0.73x,-37.54%
+30,"Dijkstra",9.10,0.71,18.67,1.00x,0.00%
+30,"Linear (DFS)",2.51,0.28,5.16,3.63x,72.46%
+30,"Linear (Kahn)",3.88,0.46,7.94,2.35x,57.40%

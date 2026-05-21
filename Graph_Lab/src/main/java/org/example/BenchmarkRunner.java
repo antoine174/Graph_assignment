@@ -9,7 +9,7 @@ import java.util.Locale;
 public class BenchmarkRunner {
 //def fe vm options -Xmx4G -Xss8m
     private static final int VERTICES = 5000;// moomkn t over flow
-    private static final int RUNS = 5;
+    private static final int RUNS =5;
     private static final long SEED = 42L;
 
     public static void main(String[] args) {
@@ -34,19 +34,29 @@ public class BenchmarkRunner {
 
         System.out.println("\n 2. SSSP Calculation (General Graphs) ");
         int source = 0;
-        runDijkstraBenchmark("Sparse Graph (E ~ 5V)", sparseGraph, source, ssspCsv);
+      runDijkstraBenchmark("Sparse Graph (E ~ 5V)", sparseGraph, source, ssspCsv);
         runDijkstraBenchmark("Dense Graph (E ~ 25%)", denseGraph, source, ssspCsv);
         runDijkstraBenchmark("Complete Graph (E ~ 100%)", completeGraph, source, ssspCsv);
         runDijkstraBenchmark("DAG (Directed Acyclic)", dag, source, ssspCsv);
 
-        System.out.println("\n 3. SSSP Calculation (DAG Topology 3-Way Comparison) ");
-        runDAGComparisonBenchmark(dag, source, dagCsv);
+        // only the amount of runs
+//        System.out.println("\n 3. SSSP Calculation (DAG Topology 3-Way Comparison) ");
+//        runDAGComparisonBenchmark(dag, source, dagCsv);
 
         saveToFile("MST_Results.csv", mstCsv.toString());
         saveToFile("SSSP_Results.csv", ssspCsv.toString());
-        saveToFile("DAG_Results.csv", dagCsv.toString());
+//        saveToFile("DAG_Results.csv", dagCsv.toString());
 
-        System.out.println("\n  3 clean CSV files generated    !");
+//        System.out.println("\n  3 clean CSV files generated    !");
+        StringBuilder scalingCsv = new StringBuilder("Runs,Algorithm,Mean (ms),Median (ms),Standard Deviation (ms),Speed-up Multiplier,Time Decrease (%)\n");
+
+
+        System.out.println("\n 3. DAG Scaling Benchmark (5, 10, 20, 30 Runs) ");
+        runDAGScalingBenchmark(dag, source, scalingCsv);
+
+         saveToFile("DAG_Scaling_Results.csv", scalingCsv.toString());
+
+        System.out.println("\n  3clean CSV files generated    !");
     }
 
     private static void runMSTBenchmark(String graphType, Graph graph, StringBuilder csv) {
@@ -119,6 +129,69 @@ public class BenchmarkRunner {
 
         csv.append(String.format(Locale.US, "\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2fx,%.2f%%\n",
                 "DAG", "Linear (Kahn)", kahnStats[0], kahnStats[1], kahnStats[2], kahnMultiplier, kahnPercentage));
+    }
+    private static void runDAGScalingBenchmark(Graph dag, int source, StringBuilder csv) {
+        int[] runCounts = {5, 10, 20, 30};
+
+        System.out.println("\n[Warming up the JVM]");
+        for (int i = 0; i < 10; i++) {
+            dag.dijkstra(source);
+            dag.dagShortestPath(source);
+            dag.dagShortestPathKahn(source);
+        }
+
+        for (int runs : runCounts) {
+            System.out.println("\n--- Benchmarking with " + runs + " runs ---");
+
+            double[] dijkstraTimes = new double[runs];
+            double[] dagDfsTimes = new double[runs];
+            double[] dagKahnTimes = new double[runs];
+
+            System.gc();
+            for (int i = 0; i < runs; i++) {
+                long start = System.nanoTime();
+                dag.dijkstra(source);
+                dijkstraTimes[i] = (System.nanoTime() - start) / 1_000_000.0;
+            }
+
+            System.gc();
+            for (int i = 0; i < runs; i++) {
+                long start = System.nanoTime();
+                dag.dagShortestPath(source);
+                dagDfsTimes[i] = (System.nanoTime() - start) / 1_000_000.0;
+            }
+
+            System.gc();
+            for (int i = 0; i < runs; i++) {
+                long start = System.nanoTime();
+                dag.dagShortestPathKahn(source);
+                dagKahnTimes[i] = (System.nanoTime() - start) / 1_000_000.0;
+            }
+
+            // --- 3. CALCULATE AND EXPORT ---
+            double[] dStats = calculateStats(dijkstraTimes);
+            double[] dfsStats = calculateStats(dagDfsTimes);
+            double[] kahnStats = calculateStats(dagKahnTimes);
+
+            System.out.printf(Locale.US, "Dijkstra         | Mean: %8.2f ms\n", dStats[0]);
+            System.out.printf(Locale.US, "DAG (DFS)        | Mean: %8.2f ms\n", dfsStats[0]);
+            System.out.printf(Locale.US, "DAG (Kahn Array) | Mean: %8.2f ms\n", kahnStats[0]);
+
+            double dfsMultiplier = dStats[0] / dfsStats[0];
+            double dfsPercentage = ((dStats[0] - dfsStats[0]) / dStats[0]) * 100;
+
+            double kahnMultiplier = dStats[0] / kahnStats[0];
+            double kahnPercentage = ((dStats[0] - kahnStats[0]) / dStats[0]) * 100;
+
+            csv.append(String.format(Locale.US, "%d,\"%s\",%.2f,%.2f,%.2f,1.00x,0.00%%\n",
+                    runs, "Dijkstra", dStats[0], dStats[1], dStats[2]));
+
+            csv.append(String.format(Locale.US, "%d,\"%s\",%.2f,%.2f,%.2f,%.2fx,%.2f%%\n",
+                    runs, "Linear (DFS)", dfsStats[0], dfsStats[1], dfsStats[2], dfsMultiplier, dfsPercentage));
+
+            csv.append(String.format(Locale.US, "%d,\"%s\",%.2f,%.2f,%.2f,%.2fx,%.2f%%\n",
+                    runs, "Linear (Kahn)", kahnStats[0], kahnStats[1], kahnStats[2], kahnMultiplier, kahnPercentage));
+        }
     }
 
 
